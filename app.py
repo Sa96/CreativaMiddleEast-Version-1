@@ -88,9 +88,9 @@ def dashboard():
     if 'username' in session:
         username = session['username']
 
-        application_id = 'f69a8e1c-7d49-40ac-9833-e5c7d296f4e2'
+        application_id = 'a385e141-b8ab-4b78-b3b6-34c05afede0b'
         tenant_id = 'c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd'
-        application_secret = 'b286f30a-9599-477c-b762-48360c319a16'
+        application_secret = 'a2e1225c-0360-4dd9-979b-4c9b60e000ec'
         workspace_id = '936fa150-dea4-4e49-abc4-734623c59e23'
         report_id = 'dda3cb1c-7400-4408-b480-aeaecda0bc7a'
 

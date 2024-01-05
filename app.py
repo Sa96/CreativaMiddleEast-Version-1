@@ -116,7 +116,7 @@ def dashboard():
 
             print(username, embed_token, access_token)
 
-            return render_template('RestaurantDashboard.html', username=username, embed_token=embed_token)
+            return render_template('Dashboard.html', username=username, embed_token=embed_token)
         except Exception as ex:
             print("Error: ", str(ex))
             app.logger.exception('Error in dashboard')

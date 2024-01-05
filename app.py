@@ -19,10 +19,6 @@ log = logging.getLogger()
 
 app = Flask(__name__, static_url_path='/static')
 
-connection = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL SERVER};SERVER=68.178.163.254\\SQLEXPRESS;DATABASE=PBI_Dashboard_DB;UID=sa;PWD=Ngtech@2021")
-connection.cursor()
-print("database is connected")
-
 wsgi_app = app.wsgi_app
 
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -70,17 +66,24 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
 
+    # Initialize connection and cursor
+    connection = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL SERVER};SERVER=68.178.163.254\\SQLEXPRESS;DATABASE=PBI_Dashboard_DB;UID=sa;PWD=Ngtech@2021")
     cursor = connection.cursor()
+    print("Database is connected. here is the connection : ", cursor, sep='\n')
+
     query = "SELECT * FROM dbo.Users WHERE username = ? AND password = ?"
-    cursor.execute(query, (username, password))
-    result = cursor.fetchone()
+    result = cursor.execute(query, (username, password)).fetchone()
 
     if result:
-        session['username'] = username  # Store the username in the session
-        # Redirect to home for now
+        session['username'] = username
+        cursor.close()
+        connection.close()
         return redirect(url_for('dashboard'))
     else:
+        cursor.close()
+        connection.close()
         return render_template('login.html', error="Invalid Details")
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -102,7 +105,10 @@ def dashboard():
             'resource': 'https://graph.microsoft.com',
         }
 
+        # Debugging: Print the token response
         token_response = requests.post(token_url, data=token_data)
+        print("Token Response:", token_response.json())
+
         access_token = token_response.json().get('access_token')
         try:
             report = Report(report_id, workspace_id, token=access_token)

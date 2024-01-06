@@ -18,9 +18,8 @@
         </div>
         <div class="powerBIContainer" id="reportContainer">
             <form action="{{ url_for('dashboard') }}" method="POST" autocomplete="on">
-                <iframe title="Creativa Report Ver 3.2" width="800" height="836" src="https://app.powerbi.com/view?r=eyJrIjoiMzFmN2YyMTItYTdiOC00Y2JiLTg0M2YtMjUyNjdlYTk4YmI3IiwidCI6ImM4ODk3ZDVkLTNiOGYtNDFjYi04ZjRjLWFhM2FkZjA1OWJmZCJ9&embedImagePlaceholder=true" frameborder="0" allowFullScreen="true"></iframe>
-            </form>    
-        </div>
+                <iframe width="800" height="600" src="{{ embed_url }}" frameborder="0" allowFullScreen="true"></iframe>
+            </div>
     </div>
     <script type="text/javascript">
         // Replace this code with your Power BI embedding code using the embed token

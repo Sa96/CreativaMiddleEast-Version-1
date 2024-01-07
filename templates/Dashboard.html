@@ -18,28 +18,28 @@
         </div>
         <div class="powerBIContainer" id="reportContainer">
             <form action="{{ url_for('dashboard') }}" method="POST" autocomplete="on">
-                <iframe width="800" height="600" src="{{ embed_url }}" frameborder="0" allowFullScreen="true"></iframe>
+                <iframe title="Creativa Report Ver 3.2" width="1250" height="550" src="https://app.powerbi.com/reportEmbed?reportId=dda3cb1c-7400-4408-b480-aeaecda0bc7a&autoAuth=true&ctid=c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd" frameborder="0" allowFullScreen="true"></iframe>            </div>
             </div>
-    </div>
     <script type="text/javascript">
-        // Replace this code with your Power BI embedding code using the embed token
-        var embedConfig = {
+         var embedConfiguration = {
             type: 'report',
-            report_id: 'dda3cb1c-7400-4408-b480-aeaecda0bc7a',
-            workspace_id: 'c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd',
-            embedUrl: 'https://app.powerbi.com/reportEmbed?reportId={{report_id}}&autoAuth=true&ctid={{workspace_id}}',
             tokenType: models.TokenType.Embed,
-            accessToken: '{{ embed_token }}', // Use Flask template syntax to inject the embed token
+            accessToken: '{{ access_token }}',  // Replace with the Flask variable for access token
+            embedUrl: '{{ embed_url }}',  // Replace with the Flask variable for embed URL
+            id: '{{ report_id }}',  // Replace with the Flask variable for report ID
+            permissions: models.Permissions.All,
             settings: {
-                filterPaneEnabled: false,
-                navContentPaneEnabled: false
-            }
+                filterPaneEnabled: true,
+                navContentPaneEnabled: true,
+            },
         };
 
-        var reportContainer = document.getElementById('reportContainer').value;
-        var report = powerbi.embed(reportContainer, embedConfig);
+        // Embed the Power BI report into the 'reportContainer' div
+        var reportContainer = document.getElementById('reportContainer');
+        var report = powerbi.embed(reportContainer, embedConfiguration);
         console.log("Console Report : ", report);
     </script>
+    <script src="https://microsoft.github.io/PowerBI-JavaScript/dist/powerbi.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/assets/iframeEmbed.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

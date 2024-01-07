@@ -4,7 +4,7 @@ from flask import Flask, render_template
 import pyodbc
 import logging
 import requests
-from powerbiclient import Report,models
+from powerbiclient import Report, models
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mail import Mail, Message
@@ -87,44 +87,18 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    # Check if the user is logged in
     if 'username' in session:
         username = session['username']
+        access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjVCM25SeHRRN2ppOGVORGMzRnkwNUtmOTdaRSIsImtpZCI6IjVCM25SeHRRN2ppOGVORGMzRnkwNUtmOTdaRSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9jODg5N2Q1ZC0zYjhmLTQxY2ItOGY0Yy1hYTNhZGYwNTliZmQvIiwiaWF0IjoxNzA0NjExMjE5LCJuYmYiOjE3MDQ2MTEyMTksImV4cCI6MTcwNDYxNTM0MCwiYWNyIjoiMSIsImFpbyI6IkFUUUF5LzhWQUFBQVQzVmVahNkdna2lhNXBXSW8xdWVMZUZNcEFRVUdFRENJODUybTRiQ0VOSGo2QjJ1YmgyQWxua05yaGZ0ZDZPYkwiLCJhbXIiOlsicHdkIl0sImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2IiwiYXBwaWRhY3IiOiIwIiwiZmFtaWx5X25hbWUiOiJuZ3RlY2giLCJnaXZlbl9uYW1lIjoiTmd0ZWNoIENvbXB1dGVyIFNvZnR3YXJlIEhvdXNlIiwiZ3JvdXBzIjpbIjI5NmY4YTYyLWFlZmUtNDViNy04MGI3LWYzMTE5YzRmZjFiNiJdLCJpZHR5cCI6InVzZXIiLCJpcGFkZHIiOiIyMDAxOjhmODoxNDYxOjIzOWE6NmM1MDphNTc3OmZjZDM6YTBjMiIsIm5hbWUiOiJOZ3RlY2ggQ29tcHV0ZXIgU29mdHdhcmUgSG91c2Ugbmd0ZWNoIiwib2lkIjoiY2JiNjIwYzgtNjk5Yi00MzgyLWFiMjktODNhZDY2YTllNmJlIiwicHVpZCI6IjEwMDMyMDAxQzJCMTMwOTYiLCJwd2RfZXhwIjoiMzE1MzI0NjgwIiwicHdkX3VybCI6Imh0dHBzOi8vcHJvZHVjdGl2aXR5LnNlY3VyZXNlcnZlci5uZXQvbWljcm9zb2Z0P21hcmtldGlkPWVuLVVTXHUwMDI2ZW1haWw9aW5mbyU0MG5ndGVjaHVhZS5jb21cdTAwMjZzb3VyY2U9Vmlld1VzZXJzXHUwMDI2YWN0aW9uPVJlc2V0UGFzc3dvcmQiLCJyaCI6IjAuQVU4QVhYMkp5STg3eTBHUFRLbzYzd1diX1VaSWYza0F1dGRQdWtQYXdmajJNQk5QQURJLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6IktxaTktNFlsbk9RNXl2ZkVrQXF1V1NUcUVRby1ORmJLTXEtXzZ1SDQtR0kiLCJ0aWQiOiJjODg5N2Q1ZC0zYjhmLTQxY2ItOGY0Yy1hYTNhZGYwNTliZmQiLCJ1bmlxdWVfbmFtZSI6ImluZm9Abmd0ZWNodWFlLmNvbSIsInVwbiI6ImluZm9Abmd0ZWNodWFlLmNvbSIsInV0aSI6Ik9ndGptZEp0ajBHU2hqenp3ekhUQkEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbIjYyZTkwMzk0LTY5ZjUtNDIzNy05MTkwLTAxMjE3NzE0NWUxMCIsImI3OWZiZjRkLTNlZjktNDY4OS08MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2FlIjoiMSIsInhtc19jYyI6WyJDUDEiXSwieG1zX2ZpbHRlcl9pbmRleCI6WyI3OSJdLCJ4bXNfcmQiOiIwLjQyTGxZQlJpOUFjQSIsInhtc19zc20iOiIxIiwieG1zX3RjZHQiOjE2Mzk4OTgwNTR9.TVv3fWNInAgRJxvtP8Y-oO2VokJ4Jz17ncQn2Uqg3BJoUTX8AmSxHAo8f9MwTAybrEXQ9zjhGZWJiZmtYElVCaHZZjDFOmI5Jbqop2lTQdnKuy2LoXclPARcDj2RxdpTuMwk9Uk_SFD6BO4iL8bPfxQnFyS5gbQioxxM3tdeG8r6Xr6D_C2Pgf7JNbAGwrcZDAPHAoSpXHA9QkLoqkdNBjlq_USItKHl61s3KripE-WAW7JwTfkPG71ETDqHEghHp8g0Gc8vBiA9EVEJJfIVTlbQjFwVVKVA3xWbTSRBGOKFBWv0nO4oMIdyrY6cJdLVdKA7ni4GH8V0Q9k1eVjYrA"
+        
+        report = Report(report_id='dda3cb1c-7400-4408-b480-aeaecda0bc7a', workspace_id='936fa150-dea4-4e49-abc4-734623c59e23', access_token=access_token)
+        embed_url = "https://app.powerbi.com/reportEmbed?reportId=dda3cb1c-7400-4408-b480-aeaecda0bc7a&autoAuth=true&ctid=c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd"
 
-        application_id = 'a385e141-b8ab-4b78-b3b6-34c05afede0b'
-        tenant_id = 'c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd'
-        application_secret = 'a2e1225c-0360-4dd9-979b-4c9b60e000ec'
-        workspace_id = '936fa150-dea4-4e49-abc4-734623c59e23'
-        report_id = 'dda3cb1c-7400-4408-b480-aeaecda0bc7a'
+        print(username, access_token, embed_url, sep="\n")
 
-        token_url = f'https://login.microsoftonline.com/{tenant_id}/oauth2/token'
-        token_data = {
-            'grant_type': 'client_credentials',
-            'client_id': application_id,
-            'client_secret': application_secret,
-            'resource': 'https://graph.microsoft.com',
-        }
-
-        # Debugging: Print the token response
-        token_response = requests.post(token_url, data=token_data)
-        print("Token Response:", token_response.json())
-
-        access_token = token_response.json().get('access_token')
-        try:
-            report = Report(report_id, workspace_id, token=access_token)
-            embed_token = report.get_embed_token()
-
-            print(username, embed_token, access_token)
-
-            return render_template('Dashboard.html', username=username, embed_token=embed_token)
-        except Exception as ex:
-            print("Error: ", str(ex))
-            app.logger.exception('Error in dashboard')
-            return render_template('Error.html', error_message=str(ex)), 500
+        return render_template('Dashboard.html', username=username, access_token=access_token)
     else:
-        # Redirect to the login page if not logged in
         return redirect(url_for('index'))
-
 
 @app.route('/forget_password')
 def forget_password():

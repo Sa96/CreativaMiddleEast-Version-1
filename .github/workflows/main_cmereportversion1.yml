@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'CMEReportVersion1'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EE4F5603DD5A47B895CBF3EFF23BE4EB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_793A5250CB524F208B9290243070E35C }}

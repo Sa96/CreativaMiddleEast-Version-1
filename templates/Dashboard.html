@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=content-width initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://microsoft.github.io/PowerBI-JavaScript/dist/powerbi.js"></script>
+    <script src="https://unpkg.com/powerbi-client@2.10.2/dist/powerbi.min.js"></script>
+    <script src="https://alcdn.msauth.net/browser/2.0.0/js/msal-browser.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/RestaurantDashboard.css') }}"/>
+    <link rel="icon" href="{{url_for('static', filename='images/logo.jpg')}}">
     <title>Creativa MiddleEast</title>
 </head>
 <body>
@@ -19,28 +21,49 @@
         </div>
         <div class="powerBIContainer" id="reportContainer" style="min-height: fit-content; min-width: none;">
             <form action="{{ url_for('dashboard') }}" method="POST" autocomplete="on">
-                <iframe title="Creativa Report Ver 3.2" width="1250" height="550" src="https://app.powerbi.com/reportEmbed?reportId=dda3cb1c-7400-4408-b480-aeaecda0bc7a&autoAuth=true&ctid=c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd" frameborder="0" allowFullScreen="true"></iframe>
+                <iframe title="Creativa Report Ver 3.2" width="1300" height="550" src="https://app.powerbi.com/reportEmbed?reportId=dda3cb1c-7400-4408-b480-aeaecda0bc7a&autoAuth=true&ctid=c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd" frameborder="0" allowFullScreen="true"></iframe>
             </div>
-    <script type="text/javascript">
-         var embedConfiguration = {
-            type: 'report',
-            id: '{report_id}',
-            embedUrl: '{embed_url}',
-            accessToken: '{access_token}',            
-            tokenType: models.TokenType.Embed,
-            settings: {
-                filterPaneEnabled: false,
-                navContentPaneEnabled: false
-            }
-        };
+    <!-- Include MSAL.js -->
+    <script src="https://cdn.jsdelivr.net/npm/msal@2/dist/msal.min.js"></script>
 
-        // Get a reference to the embedded report container
-        var reportContainer = document.getElementById('reportContainer');
 
-        // Embed the Power BI report
-        var report = powerbi.embed(reportContainer, embedConfiguration);
-    </script>
+<!-- Your Power BI embedding code -->
+<script>
+    // Example using MSAL.js for authentication
+
+const config = {
+  auth: {
+    clientId: '1a67e953-5850-45ab-9a98-300ccf790599',
+    authority: 'https://login.microsoftonline.com/c8897d5d-3b8f-41cb-8f4c-aa3adf059bfd',
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+  },
+};
+
+const clientApplication = new Msal.UserAgentApplication(config);
+
+// Check if the user is signed in, if not, prompt for login
+if (!clientApplication.getAccount()) {
+  clientApplication.loginPopup()
+    .then((response) => {
+      // Successfully logged in, you can now use the obtained token
+      const accessToken = response.accessToken;
+      // Proceed with embedding Power BI report using the obtained token
+    })
+    .catch((error) => {
+      console.error('Authentication error:', error);
+    });
+} else {
+  // User is already signed in, proceed with embedding Power BI report
+  const accessToken = clientApplication.getAccount().idToken.rawIdToken;
+  // Proceed with embedding Power BI report using the obtained token
+}
+
+</script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/assets/iframeEmbed.js"></script>
+   
+    
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
